@@ -393,3 +393,20 @@ function getCategoryNameByIdProduct($product): string
     $term = get_term_by("id", $category_id, "product_cat", "ARRAY_A");
     return $term["name"] ?? "Sin Categoria";
 }
+
+//cambio el nombre del archivo que llega al correo
+add_filter('wpo_wcpdf_filename', 'wpo_wcpdf_custom_filename', 10, 4);
+/**
+ * Cambio el nombre de los pdf a Pedido-N.pdf
+ *
+ * @return void
+ */
+function wpo_wcpdf_custom_filename($filename, $template_type, $order_ids, $context)
+{
+    // prepend your shopname to the file
+    $invoice_string = _n('invoice', 'invoices', count($order_ids), 'woocommerce-pdf-invoices-packing-slips');
+    $new_prefix = "Pedido-";
+    $new_filename = str_replace($invoice_string, $new_prefix, $filename);
+
+    return $new_filename;
+}
